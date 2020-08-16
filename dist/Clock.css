@@ -1,0 +1,1 @@
+@-webkit-keyframes clock{to{transform:rotate(1turn)}}@keyframes clock{to{transform:rotate(1turn)}}svg{transform:rotate(-90deg);background:#000;border-radius:50%}circle{-webkit-animation:clock 6s linear infinite;animation:clock 6s linear infinite;transform-origin:100px 100px}
