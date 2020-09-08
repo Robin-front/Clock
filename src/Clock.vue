@@ -1,88 +1,92 @@
 <template>
-    <svg :style="{transform:`rotate(${rotate}deg)`}" width="200px" height="200px" viewBox="0 0 200 200">
-      <circle
-        v-for="(item, i) in circleArray"
-        :key="i"
-        r="50"
-        cx="100"
-        cy="100"
-        fill="none"
-        stroke-width="100"
-        :stroke="item.stroke"
-        :stroke-dasharray="`${item.strokeDasharray} 314`"
-        :stroke-dashoffset="item.dashoffset"
-      />
-    </svg>
+  <div class="circle">
+    <div
+      :class="['line', isActive(item)]"
+      v-for="item in 180"
+      :key="item"
+      :style="{ transform: `rotate(${item*2}deg)` }"
+    ></div>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Clock',
+  name: "Clock",
   data() {
     return {
-      rotate: -90,
-      lastTimeStamp: performance.now(),
-      color: ['yellowgreen', '#CC6600', '#FF0000'],
-      circleArray: Array.from({length: 4}, () => ({
-        stroke: 'yellowgreen',
-        strokeDasharray:1,
-        dashoffset: -1
-      })),
-      frameTime: 1000 / 60,
-    }
+      lastTimeStamp: Date.now(),
+      active: [{ from: 0, to: 0, level: "green" }],
+    };
   },
   mounted() {
     requestAnimationFrame(this.walker);
   },
   methods: {
     walker() {
-      const frameLength = Math.round((performance.now() - this.lastTimeStamp)/this.frameTime);
-      this.lastTimeStamp = performance.now();
-      let level = 0;
-      if (frameLength <= 3) {
-        level = 0;
-      } else if (frameLength <= 6) {
-        level = 1;
-      } else {
-        level = 2;
-      }
-      const strokeDasharray = 1 * frameLength;
-      
-      this.circleArray.unshift({
-        stroke: this.color[level],
-        strokeDasharray,
-        dashoffset: 0
-      });
-      if (this.circleArray.length > 4) {
-        this.circleArray.pop();
-      }
-      const width = this.circleArray.reduce((sum, circle) => {
-        circle.dashoffset = -sum+1;
-        sum += circle.strokeDasharray;
-        return sum;
-      }, 0);
-      this.rotate = (-width)/314*360-90;
       requestAnimationFrame(this.walker);
-    }
-  }
-}
+      const time = (Date.now() - this.lastTimeStamp) / 20;
+      this.lastTimeStamp = Date.now();
+      const item = this.active[this.active.length - 1];
+      if (time > 3) {
+        this.active.push({
+          from: item.to,
+          to: (item.to + time) % 180,
+          level: "red",
+        });
+      } else {
+        this.active.push({
+          from: item.to,
+          to: (item.to + time) % 180,
+          level: "green",
+        });
+      }
+      if (this.active.length > 2) {
+        this.active.shift();
+      }
+    },
+    isActive(cur) {
+      let className = "";
+      this.active.some((item) => {
+        if (
+          (cur > item.from && cur < item.to) ||
+          (item.to < item.from && (cur > item.from || cur < item.to))
+        ) {
+          className = item.level;
+          return true;
+        }
+        return false;
+      });
+      return className;
+    },
+  },
+};
 </script>
 
 <style>
-@keyframes clock {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-svg {
-  transform: rotate(-90deg);
-  background: black;
-  border-radius: 50%;
-}
-
 circle {
   animation: clock 6s linear infinite;
   transform-origin: 100px 100px;
+}
+.circle {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background-color: black;
+}
+.line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 50%;
+  height: 6px;
+  border-radius: 4px;
+  transform-origin: 0 3px;
+}
+.green {
+  background-color: chartreuse;
+}
+.red {
+  background-color: red;
 }
 </style>
