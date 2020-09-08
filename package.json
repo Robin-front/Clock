@@ -1,0 +1,25 @@
+{
+  "name": "perf-clock",
+  "version": "2.0.0",
+  "description": "vue performance clock",
+  "main": "dist/Clock.umd.min.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Robin-front/Clock.git"
+  },
+  "keywords": [
+    "clock",
+    "performance"
+  ],
+  "author": "robin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Robin-front/Clock/issues"
+  },
+  "homepage": "https://github.com/Robin-front/Clock#readme"
+}
